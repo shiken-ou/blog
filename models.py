@@ -1,6 +1,7 @@
 from sqlalchemy import Integer, String, Text, DateTime, create_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from datetime import datetime, timezone
+from config import DevelopmentConfig
 
 class Base(DeclarativeBase):
     pass
@@ -19,4 +20,4 @@ class Post(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone= True), default= lambda :datetime.now(timezone.utc))
 
 
-engine = create_engine('sqlite:///instance/blog.db')
+engine = create_engine(DevelopmentConfig.SQLALCHEMY_DATABASE_URL)

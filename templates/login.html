@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login page</title>
+</head>
+<body>
+    {% for catagory, message in get_fashed_message(with_catagory= True) %}
+        <p class= "{{ catagory }}"> {{ message }} </p>
+    {% endfor %}
+
+    <form method="post">
+        <div>
+            {{ form.username.label }}<br>
+            {{ form.username() }}
+        </div>
+
+        <div>
+            {{ form.password.label }}<br>
+            {{ form.password() }}
+        </div>
+
+        <div>
+            {{ form.submit() }}
+        </div>
+    </form>
+</body>
+</html>
