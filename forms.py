@@ -1,5 +1,6 @@
 from flask import Blueprint, url_for, render_template, flash
 from flask_wtf import FlaskForm
+from flask_login import login_user
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
 from sqlalchemy import select
@@ -36,8 +37,9 @@ def login():
             user = session.scalars(stmt).one()
             if user:
                 if check_password_hash(user.password_hash, password):
+                    login_user(user, remember= True)
                     flash('ログイン成功', 'success')
                     return url_for('admin')
-            flash('無効なユーザー名またはパスワードです', 'fail')
+            flash('無効なユーザー名またはパスワードです', 'error')
     
     return render_template('login.html', form= form)

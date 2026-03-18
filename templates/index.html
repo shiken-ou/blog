@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index</title>
+</head>
+<body>
+    {% for category, message in get_fashed_message(with_category= True) %}
+        <p class="{{ category }}">{{ message }}</p>
+    {% endfor %}
+
+    {% if posts %}
+        <div>
+            <h1>タイトル</h1>
+            <ul>
+                {% for post in posts %}
+                    <li>
+                        <a href="{{ url_for('show_post', id= post.id) }}">post.title</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>post</title>
+    <style>
+        .content {
+            white-space: pre-line;
+        }
+    </style>
+</head>
+<body>
+    {% for category, message in get_fashed_message(with_category= True) %}
+        <p class="{{ category }}">{{ message }}</p>
+    {% endfor %}
+
+    <div class="post">
+        {% if post %}
+            <div class="title">
+                <h1>{{ post.title }}</h1>
+            </div>
+            <div class="content">{{ post.content }}</div>
+        {{% endif %}}
+        
+        {% if current_user.is_autenticated %}
+            <form action="{{ url_for('edit_post', id= post.id) }}", method="get">
+                <button type="submit">文章を編集</button>
+            </form>
+            <form action="{{ url_for('delete_post', id= post.id) }}", method="post">
+                <button type="submit" onclick="return confirm('本当に削除してよろしいですか')">文章を削除</button>
+            </form>
+        {% endif %}
+    </div>
+</body>
+</html>

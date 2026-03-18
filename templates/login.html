@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>login page</title>
+    <title>login</title>
 </head>
 <body>
-    {% for catagory, message in get_fashed_message(with_catagory= True) %}
-        <p class= "{{ catagory }}"> {{ message }} </p>
+    {% for category, message in get_fashed_message(with_category= True) %}
+        <p class= "{{ category }}"> {{ message }} </p>
     {% endfor %}
 
     <form method="post">
