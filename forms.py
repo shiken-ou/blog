@@ -4,9 +4,9 @@ from flask_login import login_user
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
 from sqlalchemy import select
-from sqlalchemy.orm import Session
-from models import engine, User
 from werkzeug.security import check_password_hash
+from database import SessionLocal
+from models import User
 
 forms_bp = Blueprint('forms', __name__)
 
@@ -30,9 +30,9 @@ def login():
 
     if form.validate_on_submit():
         username = form.username.data
-        password = form.username.data
+        password = form.password.data
         
-        with Session(engine) as session:
+        with SessionLocal() as session:
             stmt = select(User).where(User.username == username)
             user = session.scalars(stmt).one()
             if user:
