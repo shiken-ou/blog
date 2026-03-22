@@ -47,27 +47,6 @@ def show_post(id):
     return render_template('post.html', post= post)
 
 
-@app.route('post/new')
-def create_post():
-    pass
-
-@app.post('/post/<int:id>/delete')
-@login_required
-def delete_post(id):
-    post = load_post(id)
-    try:
-        with SessionLocal() as session:
-            session.delete(post)
-            session.commit()
-    except:
-        flash('削除失敗', 'error')
-        return url_for('show_post', id= id)
-    else:
-        flash('削除済み', 'sucess')
-
-    return url_for('index')
-
-
 class EditForm(FlaskForm):
     title = StringField(
         'タイトル',
@@ -87,6 +66,21 @@ class EditForm(FlaskForm):
 
     submit = SubmitField('完了')
 
+@app.route('post/new')
+@login_required
+def create_post():
+    form = EditForm()
+
+    if form.validate_on_submit:
+        title = form.title.data
+        content = form.content.data
+        with SessionLocal() as session:
+            post = Post(title= title, content= content)
+            session.add(post)
+            session.commit()
+
+    return render_template('create_post', form= form)
+
 
 @app.route('/post/<int:id>/edit', method= ['GET', 'POST'])
 @login_required
@@ -95,6 +89,8 @@ def edit_post(id):
 
     if request.method == 'GET':
         form = EditForm(obj= post)
+    else:
+        form = EditForm()
 
     if form.validate_on_submit():
         try:
@@ -104,8 +100,25 @@ def edit_post(id):
                 session.commit()
         except:
             flash('編集失敗', 'error')
-            return url_for('show_post', id= id)
         else:
-            flash('削除済み', 'sucess')
-        
-    return render_template('edit.html', post= post)
+            flash('編集済み', 'sucess')
+            return url_for('show_post', id= id)
+    
+    return render_template('edit_post.html', form= form)
+
+
+@app.post('/post/<int:id>/delete')
+@login_required
+def delete_post(id):
+    post = load_post(id)
+    try:
+        with SessionLocal() as session:
+            session.delete(post)
+            session.commit()
+    except:
+        flash('削除失敗', 'error')
+        return url_for('show_post', id= id)
+    else:
+        flash('削除済み', 'sucess')
+
+    return url_for('index')
