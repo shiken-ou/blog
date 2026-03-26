@@ -6,7 +6,7 @@
     <title>index</title>
 </head>
 <body>
-    {% for category, message in get_fashed_message(with_category= True) %}
+    {% for category, message in get_flashed_messages(with_categories= True) %}
         <p class="{{ category }}">{{ message }}</p>
     {% endfor %}
 

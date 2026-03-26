@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, flash, request
+from flask import Flask, render_template, url_for, flash, request, redirect
 from flask_login import LoginManager, current_user, login_required
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField
@@ -23,13 +23,13 @@ Base.metadata.create_all(engine)
 def load_user(id: str)-> User:
     with SessionLocal() as session:
         stmt = select(User).where(User.id == id)
-        user = session.scalars(stmt).one()
+        user = session.scalars(stmt).first()
     return user
 
 def load_post(id: int)-> Post:
     with SessionLocal() as session:
         stmt = select(Post).where(Post.id == id)
-        post = session.scalars(stmt).one()
+        post = session.scalars(stmt).first()
     return post
 
 @app.get('/')
@@ -44,6 +44,9 @@ def index():
 @app.get('/post/<int:id>')
 def show_post(id):
     post = load_post(id)
+    if not post:
+        flash('ポストが見つかりません')
+        return redirect(url_for('index'))
     return render_template('post.html', post= post)
 
 
@@ -66,7 +69,7 @@ class EditForm(FlaskForm):
 
     submit = SubmitField('完了')
 
-@app.route('post/new')
+@app.route('/post/new')
 @login_required
 def create_post():
     form = EditForm()
@@ -82,10 +85,13 @@ def create_post():
     return render_template('create_post', form= form)
 
 
-@app.route('/post/<int:id>/edit', method= ['GET', 'POST'])
+@app.route('/post/<int:id>/edit', methods= ['GET', 'POST'])
 @login_required
 def edit_post(id):
     post = load_post(id)
+    if not post:
+        flash('ポストが見つかりません')
+        return redirect(url_for('index'))
 
     if request.method == 'GET':
         form = EditForm(obj= post)
@@ -111,6 +117,9 @@ def edit_post(id):
 @login_required
 def delete_post(id):
     post = load_post(id)
+    if not post:
+        flash('ポストが見つかりません')
+        return redirect(url_for('index'))
     try:
         with SessionLocal() as session:
             session.delete(post)
@@ -122,3 +131,6 @@ def delete_post(id):
         flash('削除済み', 'sucess')
 
     return url_for('index')
+
+if __name__ == '__main__':
+    app.run()

@@ -8,6 +8,10 @@
 </head>
 
 <body>
+    {% for category, message in get_flashed_messages(with_categories= True) %}
+        <p class="{{ category }}">{{ message }}</p>
+    {% endfor %}
+    
     <form method="post">
         <div>
             {{ form.title.label }}<br>

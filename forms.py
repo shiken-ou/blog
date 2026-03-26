@@ -1,4 +1,4 @@
-from flask import Blueprint, url_for, render_template, flash
+from flask import Blueprint, url_for, render_template, flash, redirect
 from flask_wtf import FlaskForm
 from flask_login import login_user
 from wtforms import StringField, PasswordField, SubmitField
@@ -34,12 +34,12 @@ def login():
         
         with SessionLocal() as session:
             stmt = select(User).where(User.username == username)
-            user = session.scalars(stmt).one()
+            user = session.scalars(stmt).first()
             if user:
                 if check_password_hash(user.password_hash, password):
                     login_user(user, remember= True)
                     flash('ログイン成功', 'success')
-                    return url_for('admin')
+                    return redirect(url_for('index'))
             flash('無効なユーザー名またはパスワードです', 'error')
     
     return render_template('login.html', form= form)
